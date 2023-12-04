@@ -60,11 +60,11 @@ def main():
         # Abre a página
         page = context.new_page()
         page.set_viewport_size({"width": 1366, "height": 768})
-        page.goto("https://suaempresa.neovero.com/login")
+        page.goto("https://unimedfortaleza.neovero.com/login")
 
         # Preenche as credenciais de login
-        page.fill('input[type="text"]', "seu usuário")
-        page.fill('input[type="password"]', "sua senha")
+        page.fill('input[type="text"]', "painel.ec")
+        page.fill('input[type="password"]', "unimed")
         page.click('button[type="submit"]')
 
         # Aguarda a página carregar
@@ -75,7 +75,7 @@ def main():
 
         # Aguarda a página carregar
         page.wait_for_load_state("load")
-        time.sleep(15)
+        time.sleep(80)
 
         #Clica em Ordem de Serviço
         page.wait_for_selector('//*[@id="nvNavBar"]/nav[2]/div[1]/ul/li[3]/a', state="visible")
@@ -97,9 +97,6 @@ def main():
             elemento = '.cdk-row.ng-star-inserted:nth-child(1)'
             page.wait_for_selector(elemento, state='visible', timeout=0)
 
-            #Linha de uma nova requisição
-            novaReq = page.inner_text(elemento)
-
             # Apenas o Número da linha de requisição
             numeroReq = page.inner_text(f'{elemento} .cdk-column-numero')
 
@@ -108,9 +105,6 @@ def main():
 
             # Apenas a Emresa
             empresaReq = page.inner_text(f'{elemento} .cdk-column-empresaid') 
-
-            # Atribua ReqLogistica apenas quando o tipo de requisição for "LOGÍSTICA"
-            ReqLogistica = tipoReq if page.inner_text(f'{elemento} .cdk-column-tipoManutencao') == "LOGÍSTICA" else None
 
             # Lógica do loop para reproduzir o áudio da notificação
             if int(numeroReq) != requisicao:
@@ -183,6 +177,17 @@ def main():
 
             else:
                 print("Aguardando nova requisição")
+        
+            # Localiza a div "edge-menu" e passa o mouse sobre ela
+            page.wait_for_selector('//*[@id="janela0"]/nav/div[2]/ul/li/button', state="visible")
+            div_menu = page.query_selector('//*[@id="janela0"]/nav/div[2]/ul/li/button')
+            if div_menu:
+                div_menu.click()
+            else:
+                print("A div 'edge-menu' não foi encontrada.")
+
+            # Aguarda um tempo para que a div "edge-menu" seja exibida
+            time.sleep(3)
           
 if __name__ == "__main__":
     main()
